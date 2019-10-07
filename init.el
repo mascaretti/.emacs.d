@@ -61,8 +61,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   (quote
-    (magitlus-contrib ghub magit ess-view ess-smart-underscore ess-smart-equals ess-R-data-view polymode ess auctex ## py-autopep8 material-theme flycheck elpy ein better-defaults))))
+   '(magitlus-contrib ghub magit ess-view ess-smart-underscore ess-smart-equals ess-R-data-view polymode ess auctex ## py-autopep8 material-theme flycheck elpy ein better-defaults)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
