@@ -72,3 +72,6 @@
 (add-hook 'Latex-mode-hook 'turn-on-reftex)   ; with Emacs latex mode
 
 (add-hook 'LaTeX-mode-hook 'turn-on-flyspell) ; Flyspell
+
+;; Markdown
+(straight-use-package 'markdown-mode)
