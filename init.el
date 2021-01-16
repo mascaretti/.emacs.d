@@ -12,6 +12,10 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+;; Magit
+(straight-use-package 'magit)
+
+
 ;; Org
 
 (add-hook 'org-mode-hook 'turn-on-flyspell)
