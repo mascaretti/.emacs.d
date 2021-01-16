@@ -25,7 +25,7 @@
 (setq org-log-done 'note)
 (setq org-agenda-files '("~/Dropbox/org"))
 (setq org-tag-alist '(("@writing" . ?w) ("@research" . ?r) ("personal" . ?p)))
-
+(setq org-odt-preferred-output-format "docx")
 ;; Org-Journal
 (straight-use-package 'org-journal)
 (setq org-journal-dir "~/Dropbox/org/journal/")
