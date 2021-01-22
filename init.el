@@ -79,13 +79,15 @@
 (straight-use-package 'markdown-mode)
 
 
-;; Python
+;; Helm
 (straight-use-package 'helm)
+(global-set-key (kbd "M-x") 'helm-M-x)
+
+;; Elpy
 (straight-use-package 'elpy)
-(use-package elpy
-  :ensure t
-  :init
-  (elpy-enable))
+(setenv "WORKON_HOME" "/home/masca/miniforge3/envs/")
+(elpy-enable)
+
 
 ;; STAN
 (straight-use-package 'stan-mode)
