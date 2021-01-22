@@ -87,7 +87,7 @@
 (straight-use-package 'elpy)
 (setenv "WORKON_HOME" "/home/masca/miniforge3/envs/")
 (elpy-enable)
-
+(straight-use-package 'jedi)
 
 ;; STAN
 (straight-use-package 'stan-mode)
