@@ -85,7 +85,7 @@
 
 ;; Elpy
 (straight-use-package 'elpy)
-(setenv "WORKON_HOME" "/home/masca/miniforge3/envs/")
+(setenv "WORKON_HOME" "~/miniforge3/envs/")
 (elpy-enable)
 (straight-use-package 'jedi)
 
