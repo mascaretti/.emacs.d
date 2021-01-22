@@ -82,6 +82,10 @@
 ;; Python
 (straight-use-package 'helm)
 (straight-use-package 'elpy)
+(use-package elpy
+  :ensure t
+  :init
+  (elpy-enable))
 
 ;; STAN
 (straight-use-package 'stan-mode)
