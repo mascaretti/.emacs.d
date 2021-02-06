@@ -1,0 +1,1 @@
+("~/.emacs.d/" "~/Dropbox/org/" "~/git/github/programming-methodologies-data-analysis/")
