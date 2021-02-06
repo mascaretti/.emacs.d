@@ -141,3 +141,6 @@
   :config
   ;; No configuration options as of now.
   )
+
+;; ESS
+(straight-use-package 'ess)
