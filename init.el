@@ -57,6 +57,9 @@
 ;; alternative
 ;; (setq bibtex-completion-pdf-open-function 'org-open-file)
 
+;; Org Roam
+(straight-use-package 'org-roam)
+(executable-find "sqlite3")
 
 ;; Writerroom Mode
 (straight-use-package 'writeroom-mode)
@@ -180,4 +183,42 @@
 (use-package which-key
     :config
     (which-key-mode))
+
+;; try mu4e
+(require 'mu4e)
+;; use mu4e for e-mail in emacs
+(setq mail-user-agent 'mu4e-user-agent)
+
+;; these are actually the defaults
+(setq
+  mu4e-sent-folder   "/Inviata"       ;; folder for sent messages
+  mu4e-drafts-folder "/Bozze"     ;; unfinished messages
+  mu4e-trash-folder  "/Cestino"      ;; trashed messages
+  mu4e-refile-folder "/archive")   ;; saved messages
+
+(setq mu4e-get-mail-command "mbsync -a")
+;; tell message-mode how to send mail
+
+(setq mu4e-compose-reply-to-address "mascaretti@stat.unipd.it"
+      user-email-address "mascaretti@stat.unipd.it"
+      user-full-name "Andrea Mascaretti")
+
+(setq mu4e-compose-signature
+      "Andrea Mascaretti")
+
+;; SMTP MAIL SETTING
+(setq
+   message-send-mail-function 'smtpmail-send-it
+   smtpmail-default-smtp-server "smtp.stat.unipd.it"
+   smtpmail-smtp-server "smtp.stat.unipd.it"
+   smtpmail-smtp-service 465
+   smtpmail-local-domain "unipd.it")
+
+   ;; if you need offline mode, set these -- and create the queue dir
+   ;; with 'mu mkdir', i.e.. mu mkdir /home/user/Maildir/queue
+   ;; smtpmail-queue-mail  nil
+   ;; smtpmail-queue-dir  "/home/user/Maildir/queue/cur")
+
+;; don't keep message buffers around
+(setq message-kill-buffer-on-exit t)
 
