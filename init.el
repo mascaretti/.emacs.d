@@ -57,9 +57,6 @@
 ;; alternative
 ;; (setq bibtex-completion-pdf-open-function 'org-open-file)
 
-;; Org Roam
-(straight-use-package 'org-roam)
-(executable-find "sqlite3")
 
 ;; Writerroom Mode
 (straight-use-package 'writeroom-mode)
