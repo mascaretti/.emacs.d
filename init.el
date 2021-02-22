@@ -25,9 +25,59 @@
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c c") 'org-capture)
 (setq org-log-done 'note)
+(setq org-directory "~/Dropbox/org")
 (setq org-agenda-files '("~/Dropbox/org"))
 (setq org-tag-alist '(("@writing" . ?w) ("@research" . ?r) ("personal" . ?p)))
 (setq org-odt-preferred-output-format "docx")
+
+(setq org-capture-templates '(("t" "Todo [inbox]" entry
+                               (file+headline "~/Dropbox/org/inbox.org" "Tasks")
+                               "* TODO %i%?")
+                              ("T" "Tickler" entry
+                               (file+headline "~/Dropbox/org/tickler.org" "Tickler")
+                               "* %i%? \n %U")))
+
+(setq org-refile-targets '(("~/Dropbox/org/gtd.org" :maxlevel . 3)
+                           ("~/Dropbox/org/someday.org" :level . 1)
+                           ("~/Dropbox/org/tickler.org" :maxlevel . 2)))
+
+
+(setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+
+;; Hugo + Org mode
+(straight-use-package 'ox-hugo)
+(use-package ox-hugo
+  :after ox)
+(setq HUGO-BASE-DIR "git/github/phd-blog")
+
+;; Org Capture
+;; Populates only the EXPORT_FILE_NAME property in the inserted headline.
+(with-eval-after-load 'org-capture
+  (defun org-hugo-new-subtree-post-capture-template ()
+    "Returns `org-capture' template string for new Hugo post.
+See `org-capture-templates' for more information."
+    (let* ((title (read-from-minibuffer "Post Title: ")) ;Prompt to enter the post title
+           (fname (org-hugo-slug title)))
+      (mapconcat #'identity
+                 `(
+                   ,(concat "* TODO " title)
+                   ":PROPERTIES:"
+                   ,(concat ":EXPORT_FILE_NAME: " fname)
+                   ":END:"
+                   "%?\n")          ;Place the cursor here finally
+                 "\n")))
+
+  (add-to-list 'org-capture-templates
+               '("h"                ;`org-capture' binding + h
+                 "Hugo post"
+                 entry
+                 ;; It is assumed that below file is present in `org-directory'
+                 ;; and that it has a "Blog Ideas" heading. It can even be a
+                 ;; symlink pointing to the actual location of blog.org!
+                 (file+olp "blog.org" "Blog Ideas")
+                 (function org-hugo-new-subtree-post-capture-template))))
+
+
 ;; Org-Journal
 (straight-use-package 'org-journal)
 (setq org-journal-dir "~/Dropbox/org/journal/")
@@ -39,15 +89,15 @@
 (straight-use-package 'org-ref)
 (straight-use-package 'helm-bibtex)
 (require 'org-ref)
-(setq reftex-default-bibliography '("~/Dropbox/bibliography/references.bib"))
+(setq reftex-default-bibliography '("~/gdrive/phd/references/zotLib.bib"))
 
 ;; see org-ref for use of these variables
-(setq org-ref-bibliography-notes "~/Dropbox/bibliography/notes.org"
-      org-ref-default-bibliography '("~/Dropbox/bibliography/references.bib")
-      org-ref-pdf-directory "~/Dropbox/bibliography/bibtex-pdfs/")
-(setq bibtex-completion-bibliography "~/Dropbox/bibliography/references.bib"
-      bibtex-completion-library-path "~/Dropbox/bibliography/bibtex-pdfs"
-      bibtex-completion-notes-path "~/Dropbox/bibliography/helm-bibtex-notes")
+(setq org-ref-bibliography-notes "~/gdrive/phd/references/references/notes.org"
+      org-ref-default-bibliography '("~/gdrive/phd/references/zotLib.bib")
+      org-ref-pdf-directory "~/gdrive/phd/references/bibtex-pdfs/")
+(setq bibtex-completion-bibliography "~/gdrive/phd/references/zotLib.bib"
+      bibtex-completion-library-path "~/gdrive/phd/references/bibtex-pdfs"
+      bibtex-completion-notes-path "~/gdrive/phd/references/helm-bibtex-notes")
 
 ;; open pdf with system pdf viewer (works on mac)
 (setq bibtex-completion-pdf-open-function
@@ -57,9 +107,6 @@
 ;; alternative
 ;; (setq bibtex-completion-pdf-open-function 'org-open-file)
 
-
-;; Writerroom Mode
-(straight-use-package 'writeroom-mode)
 
 ;; AUCTeX
 (straight-use-package 'auctex)
@@ -75,111 +122,8 @@
 
 (add-hook 'LaTeX-mode-hook 'turn-on-flyspell) ; Flyspell
 
-;; Markdown
-(straight-use-package 'markdown-mode)
-
-
-;; Helm
-(straight-use-package 'helm)
-(global-set-key (kbd "M-x") 'helm-M-x)
-
-;; Elpy
-(straight-use-package 'elpy)
-(setenv "WORKON_HOME" "~/miniforge3/envs/")
-(elpy-enable)
-(straight-use-package 'jedi)
-
-;; STAN
-(straight-use-package 'stan-mode)
-(straight-use-package 'company-stan)
-(straight-use-package 'eldoc-stan)
-(straight-use-package 'flycheck-stan)
-(straight-use-package 'stan-snippets)
-
-;;; stan-mode.el
-(use-package stan-mode
-  :mode ("\\.stan\\'" . stan-mode)
-  :hook (stan-mode . stan-mode-setup)
-  ;;
-  :config
-  ;; The officially recommended offset is 2.
-  (setq stan-indentation-offset 2))
-
-;;; company-stan.el
-(use-package company-stan
-  :hook (stan-mode . company-stan-setup)
-  ;;
-  :config
-  ;; Whether to use fuzzy matching in `company-stan'
-  (setq company-stan-fuzzy nil))
-
-;;; eldoc-stan.el
-(use-package eldoc-stan
-  :hook (stan-mode . eldoc-stan-setup)
-  ;;
-  :config
-  ;; No configuration options as of now.
-  )
-
-;;; flycheck-stan.el
-(use-package flycheck-stan
-  ;; Add a hook to setup `flycheck-stan' upon `stan-mode' entry
-  :hook ((stan-mode . flycheck-stan-stanc2-setup)
-         (stan-mode . flycheck-stan-stanc3-setup))
-  :config
-  ;; A string containing the name or the path of the stanc2 executable
-  ;; If nil, defaults to `stanc2'
-  (setq flycheck-stanc-executable nil)
-  ;; A string containing the name or the path of the stanc2 executable
-  ;; If nil, defaults to `stanc3'
-  (setq flycheck-stanc3-executable nil))
-
-;;; stan-snippets.el
-(use-package stan-snippets
-  :hook (stan-mode . stan-snippets-initialize)
-  ;;
-  :config
-  ;; No configuration options as of now.
-  )
-
 ;; ESS
 (straight-use-package 'ess)
-
-;; LSP
-(straight-use-package 'lsp-mode)
-(straight-use-package 'lsp-ui)
-(straight-use-package 'company)
-(straight-use-package 'lsp-treemacs)
-(straight-use-package 'helm-lsp)
-(straight-use-package 'dap-mode)
-(straight-use-package 'which-key)
-
-(use-package lsp-mode
-  :init
-  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-  (setq lsp-keymap-prefix "C-c l")
-  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-         (R-mode . lsp)
-         ;; if you want which-key integration
-         (lsp-mode . lsp-enable-which-key-integration))
-  :commands lsp)
-
-;; optionally
-(use-package lsp-ui :commands lsp-ui-mode)
-;; if you are helm user
-(use-package helm-lsp :commands helm-lsp-workspace-symbol)
-;; if you are ivy user
-;; (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
-;; (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
-
-;; optionally if you want to use debugger
-(use-package dap-mode)
-;; (use-package dap-LANGUAGE) to load the dap adapter for your language
-
-;; optional if you want which-key integration
-(use-package which-key
-    :config
-    (which-key-mode))
 
 ;; try mu4e
 (require 'mu4e)
@@ -219,3 +163,9 @@
 ;; don't keep message buffers around
 (setq message-kill-buffer-on-exit t)
 
+;; PROJECTILE
+(straight-use-package 'projectile)
+(require 'projectile)
+(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+(projectile-mode +1)

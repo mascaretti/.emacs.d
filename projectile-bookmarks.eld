@@ -1,1 +1,1 @@
-("~/.emacs.d/" "~/Dropbox/org/" "~/git/github/programming-methodologies-data-analysis/")
+("~/.emacs.d/" "~/Dropbox/org/" "~/git/github/nature-scientific-data/" "~/git/github/iur1-bot/" "~/git/github/tensor-decomposition-tutorial/" "~/git/github/rete-dottorandu-bot/" "~/git/github/programming-methodologies-data-analysis/" "~/git/github/phd-blog/" "~/git/github/notes/")
