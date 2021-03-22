@@ -44,40 +44,6 @@
 
 (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
 
-;; Hugo + Org mode
-(straight-use-package 'ox-hugo)
-(use-package ox-hugo
-  :after ox)
-(setq HUGO-BASE-DIR "git/github/phd-blog")
-
-;; Org Capture
-;; Populates only the EXPORT_FILE_NAME property in the inserted headline.
-(with-eval-after-load 'org-capture
-  (defun org-hugo-new-subtree-post-capture-template ()
-    "Returns `org-capture' template string for new Hugo post.
-See `org-capture-templates' for more information."
-    (let* ((title (read-from-minibuffer "Post Title: ")) ;Prompt to enter the post title
-           (fname (org-hugo-slug title)))
-      (mapconcat #'identity
-                 `(
-                   ,(concat "* TODO " title)
-                   ":PROPERTIES:"
-                   ,(concat ":EXPORT_FILE_NAME: " fname)
-                   ":END:"
-                   "%?\n")          ;Place the cursor here finally
-                 "\n")))
-
-  (add-to-list 'org-capture-templates
-               '("h"                ;`org-capture' binding + h
-                 "Hugo post"
-                 entry
-                 ;; It is assumed that below file is present in `org-directory'
-                 ;; and that it has a "Blog Ideas" heading. It can even be a
-                 ;; symlink pointing to the actual location of blog.org!
-                 (file+olp "blog.org" "Blog Ideas")
-                 (function org-hugo-new-subtree-post-capture-template))))
-
-
 ;; Org-Journal
 (straight-use-package 'org-journal)
 (setq org-journal-dir "~/Dropbox/org/journal/")
@@ -87,7 +53,7 @@ See `org-capture-templates' for more information."
 
 ;; Org-ref
 (straight-use-package 'org-ref)
-(straight-use-package 'helm-bibtex)
+(straight-use-package 'ivy-bibtex)
 (require 'org-ref)
 (setq reftex-default-bibliography '("~/gdrive/phd/references/zotLib.bib"))
 
@@ -96,8 +62,23 @@ See `org-capture-templates' for more information."
       org-ref-default-bibliography '("~/gdrive/phd/references/zotLib.bib")
       org-ref-pdf-directory "~/gdrive/phd/references/bibtex-pdfs/")
 (setq bibtex-completion-bibliography "~/gdrive/phd/references/zotLib.bib"
-      bibtex-completion-library-path "~/gdrive/phd/references/bibtex-pdfs"
+      bibtex-completion-library-path "~/gdrive/phd/zotero_files/"
+      bibtex-completion-pdf-field "File"
       bibtex-completion-notes-path "~/gdrive/phd/references/helm-bibtex-notes")
+
+
+
+(defun my/org-ref-open-pdf-at-point ()
+  "Open the pdf for bibtex key under point if it exists."
+  (interactive)
+  (let* ((results (org-ref-get-bibtex-key-and-file))
+         (key (car results))
+	 (pdf-file (car (bibtex-completion-find-pdf key))))
+    (if (file-exists-p pdf-file)
+	(org-open-file pdf-file)
+      (message "No PDF found for %s" key))))
+
+(setq org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point)
 
 ;; open pdf with system pdf viewer (works on mac)
 (setq bibtex-completion-pdf-open-function
@@ -107,6 +88,11 @@ See `org-capture-templates' for more information."
 ;; alternative
 ;; (setq bibtex-completion-pdf-open-function 'org-open-file)
 
+
+;; Org-Roam
+(straight-use-package 'org-roam)
+(setq org-roam-directory "~/Dropbox/org-roam")
+(add-hook 'after-init-hook 'org-roam-mode)
 
 ;; AUCTeX
 (straight-use-package 'auctex)
@@ -122,6 +108,11 @@ See `org-capture-templates' for more information."
 
 (add-hook 'LaTeX-mode-hook 'turn-on-flyspell) ; Flyspell
 
+;; PDF TOOLS
+(straight-use-package 'pdf-tools)
+(add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
+(straight-use-package 'org-noter)
+(pdf-loader-install)
 ;; ESS
 (straight-use-package 'ess)
 
@@ -211,3 +202,16 @@ See `org-capture-templates' for more information."
 (global-set-key (kbd "C-c F") 'counsel-org-file)
 
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-agenda-files
+   '("~/Dropbox/org/projects.org" "/home/andrea/Dropbox/org/Dreams.org" "/home/andrea/Dropbox/org/README.org" "/home/andrea/Dropbox/org/blog.org" "/home/andrea/Dropbox/org/francais.org" "/home/andrea/Dropbox/org/gtd.org" "/home/andrea/Dropbox/org/inbox.org" "/home/andrea/Dropbox/org/learning.org" "/home/andrea/Dropbox/org/someday.org" "/home/andrea/Dropbox/org/tickler.org" "/home/andrea/Dropbox/org/writing.org")))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
