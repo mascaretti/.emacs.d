@@ -1,1 +1,1 @@
-("~/.emacs.d/" "~/Dropbox/org/" "~/Git/GitHub/covid-trajectories-analysis/")
+("~/.emacs.d/" "~/Git/GitHub/theory-methods-inference/" "~/Dropbox/org/" "~/Git/GitHub/novel/" "~/Git/GitHub/covid-trajectories-analysis/")

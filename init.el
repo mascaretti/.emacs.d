@@ -1,4 +1,4 @@
-;; Straight
+; Straight
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -60,7 +60,7 @@
 ;; see org-ref for use of these variables
 (setq org-ref-bibliography-notes "~/gdrive/phd/references/references/notes.org"
       org-ref-default-bibliography '("~/gdrive/phd/references/zotLib.bib")
-      org-ref-pdf-directory "~/gdrive/phd/references/bibtex-pdfs/")
+      org-ref-pdf-directory "~/gdrive/phd/zotero_files")
 (setq bibtex-completion-bibliography "~/gdrive/phd/references/zotLib.bib"
       bibtex-completion-library-path "~/gdrive/phd/zotero_files/"
       bibtex-completion-pdf-field "File"
@@ -94,6 +94,13 @@
 (setq org-roam-directory "~/Dropbox/org-roam")
 (add-hook 'after-init-hook 'org-roam-mode)
 
+(straight-use-package 'org-roam-bibtex)
+(use-package org-roam-bibtex
+  :after org-roam
+  :hook (org-roam-mode . org-roam-bibtex-mode)
+  :config
+  (require 'org-ref)) ; optional: if Org Ref is not loaded anywhere else, load it here
+
 ;; AUCTeX
 (straight-use-package 'auctex)
 
@@ -101,10 +108,20 @@
 (setq TeX-parse-self t)
 (setq-default TeX-master nil)
 
+;; Use pdf-tools to open PDF files
+(setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+      TeX-source-correlate-start-server t)
+
+;; Update PDF buffers after successful LaTeX runs
+(add-hook 'TeX-after-compilation-finished-functions
+           #'TeX-revert-document-buffer)
+
+
 ;; RefTeX
 (require 'reftex)
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
 (add-hook 'Latex-mode-hook 'turn-on-reftex)   ; with Emacs latex mode
+(setq reftex-plug-into-AUCTeX t)
 
 (add-hook 'LaTeX-mode-hook 'turn-on-flyspell) ; Flyspell
 
