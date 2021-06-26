@@ -284,11 +284,134 @@
   ;; No configuration options as of now.
   )
 
-;; PYTHON
-(straight-use-package 'anaconda-mode)
-(straight-use-package 'elpy)
-(use-package elpy
-  :ensure t
-  :init
-  (elpy-enable))
+;; MU4E
+(straight-use-package 'mu4e)
+(require 'mu4e)
 
+(setq mail-user-agent 'mu4e-user-agent)
+
+(setq mu4e-contexts
+    `( ,(make-mu4e-context
+	  :name "Posteo"
+	  :enter-func (lambda () (mu4e-message "Entering Posteo context"))
+          :leave-func (lambda () (mu4e-message "Leaving Posteo context"))
+	  ;; we match based on the contact-fields of the message
+	  :match-func (lambda (msg)
+			(when msg
+			  (mu4e-message-contact-field-matches msg
+			    :to "mascaretti@posteo.net")))
+	  :vars '( ( user-mail-address	    . "mascaretti@posteo.net"  )
+		   ( user-full-name	    . "Andrea Mascaretti" )
+		   ( mu4e-compose-signature .
+		     (concat
+		       "Andrea Mascaretti\n"
+		       ""))
+        ( mu4e-sent-folder  .  "/posteo/Sent" )
+        ( mu4e-drafts-folder .  "/posteo/Drafts" )
+        ( mu4e-trash-folder .  "/posteo/Trash" )
+        ( mu4e-refile-folder .  "/posteo/Archive" )
+    )
+           )
+
+       ,(make-mu4e-context
+	  :name "Work"
+	  :enter-func (lambda () (mu4e-message "Switch to the Work context"))
+	  ;; no leave-func
+	  ;; we match based on the maildir of the message
+	  ;; this matches maildir /stat and its sub-directories
+	  :match-func (lambda (msg)
+			(when msg
+			  (string-match-p "^/stat" (mu4e-message-field msg :maildir))))
+	  :vars '( ( user-mail-address	     . "mascaretti@stat.unipd.it" )
+		   ( user-full-name	     . "Andrea Mascaretti" )
+		   ( mu4e-compose-signature  .
+		     (concat
+		       "Andrea Mascaretti\n"
+		       "https://mascaretti.github.io\n"))
+                   ( mu4e-sent-folder .  "/stat/Sent" )
+        ( mu4e-drafts-folder . "/stat/Drafts" )
+        ( mu4e-trash-folder .  "/stat/Trash" )
+        ( mu4e-refile-folder . "/stat/Archive" )
+           ))
+           
+       ,(make-mu4e-context
+	  :name "Gmail"
+	  :enter-func (lambda () (mu4e-message "Switch to the Gmail context"))
+	  ;; no leave-func
+	  ;; we match based on the maildir of the message
+	  ;; this matches maildir /stat and its sub-directories
+	  :match-func (lambda (msg)
+			(when msg
+			  (string-match-p "^/gmail" (mu4e-message-field msg :maildir))))
+	  :vars '( ( user-mail-address	     . "masca4real@gmail.com" )
+		   ( user-full-name	     . "Andrea Mascaretti" )
+		   ( mu4e-compose-signature  .
+		     (concat
+		       "Andrea Mascaretti\n"
+		       "https://mascaretti.github.io\n"))
+                   ( mu4e-sent-folder .  "/gmail/[Gmail]/Posta inviata" )
+        ( mu4e-drafts-folder . "/gmail/[Gmail]/Bozze" )
+        ( mu4e-trash-folder .  "/gmail/[Gmail]/Cestino" )
+        
+           ))           
+           
+    
+    ))
+
+
+;; set `mu4e-context-policy` and `mu4e-compose-policy` to tweak when mu4e should
+;; guess or ask the correct context, e.g.
+
+;; start with the first (default) context;
+;; default is to ask-if-none (ask when there's no context yet, and none match)
+;; (setq mu4e-context-policy 'pick-first)
+
+;; compose with the current context is no context matches;
+;; default is to ask
+;; (setq mu4e-compose-context-policy nil)
+
+
+
+
+
+
+(setq sendmail-program "/usr/bin/msmtp"
+	  mail-specify-envelope-from t
+	  mail-envelope-from 'header
+	  message-sendmail-envelope-from 'header)
+
+
+;; don't keep message buffers around
+(setq message-kill-buffer-on-exit t)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(send-mail-function 'sendmail-send-it))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+(add-to-list 'mu4e-view-actions '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+(setq browse-url-browser-function 'browse-url-generic)
+(setq browse-url-generic-program "firefox")
+
+
+;; Notmuch
+;; (straight-use-package 'notmuch)
+;; (autoload 'notmuch "notmuch" "notmuch mail" t)
+;; (require 'notmuch)
+
+;; TELEGA
+(straight-use-package 'telega)
+
+;; ESS
+(straight-use-package 'ess)
+(straight-use-package 'polymode)
+(straight-use-package 'poly-markdown)
+
+(add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))

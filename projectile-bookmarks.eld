@@ -1,1 +1,1 @@
-("~/.emacs.d/" "~/Git/GitHub/theory-methods-inference/" "~/Dropbox/org/" "~/Git/GitHub/novel/" "~/Git/GitHub/covid-trajectories-analysis/")
+("~/Git/GitHub/tmi-take-home/" "~/Dropbox/org/" "~/.emacs.d/" "~/Git/GitHub/tmi-review-paper/" "~/Git/GitHub/novel/" "~/Git/GitHub/iots/" "~/Git/GitHub/polimi-iots/" "~/Git/GitHub/theory-methods-inference/" "~/Git/GitHub/GLMM-2021/" "~/Git/GitHub/spatial-statistics/" "~/Documenti/test/cxx/" "~/Git/GitHub/covid-trajectories-analysis/")
